@@ -9,4 +9,4 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 
-Route::apiResource('tickets', TicketController::class);
+Route::middleware('auth:sanctum')->apiResource('tickets', TicketController::class);

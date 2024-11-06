@@ -8,12 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 trait ApiResponses {
 
 
-    protected function ok($message){
-        return $this->success($message, Response::HTTP_OK);
+    protected function ok($message, $data){
+        return $this->success($message, $data, Response::HTTP_OK);
     }
 
 
-    protected function success($message, $status = Response::HTTP_OK) : JsonResponse
+    protected function success($message, $data, $status = Response::HTTP_OK) : JsonResponse
+    {
+        return response()->json([
+            'data' => $data,
+            'message' => $message,
+            'statusCode' => $status
+        ], $status);
+    }
+
+    protected function error($message, $status) : JsonResponse
     {
         return response()->json([
             'message' => $message,
