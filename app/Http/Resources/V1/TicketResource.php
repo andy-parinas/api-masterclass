@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api;
+namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,7 +23,7 @@ class TicketResource extends JsonResource
             "attributes" => [
                 "title" => $this->title,
                 "description" => $this->when(
-                    $request->routeIs('api_v1tickets.show'),
+                    $request->routeIs('api.v1.tickets.show'),
                     $this->description
                 ),
                 "status" => $this->status,
@@ -41,8 +41,11 @@ class TicketResource extends JsonResource
                     ]
                 ]
             ],
+            "includes" => [
+                new UserResource($this->user)
+            ],
             "links" => [
-                ["self" => route('api_v1tickets.show', ['ticket' => $this->id])]
+                ["self" => route('api.v1.tickets.show', ['ticket' => $this->id])]
             ]
         ];
     }
