@@ -37,13 +37,13 @@ class TicketResource extends JsonResource
                         "id" => $this->user_id
                     ],
                     "links" => [
-                        ["self" => "todo"]
+                        "self" => route('api.v1.users.show', ['user' => $this->user_id])
                     ]
                 ]
             ],
             "includes" => new UserResource($this->whenLoaded('user')),
             "links" => [
-                ["self" => route('api.v1.tickets.show', ['ticket' => $this->id])]
+                "self" => route('api.v1.tickets.show', ['ticket' => $this->id])
             ]
         ];
     }
