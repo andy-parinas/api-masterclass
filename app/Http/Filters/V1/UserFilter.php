@@ -4,6 +4,15 @@ namespace App\Http\Filters\V1;
 
 class UserFilter extends QueryFilter
 {
+
+    protected $sortable = [
+        'email', 
+        'name', 
+        'createdAt' => 'created_at'
+    ];
+
+
+
     public function id($value)
     {
         return $this->builder->whereIn('id', explode(",", $value));

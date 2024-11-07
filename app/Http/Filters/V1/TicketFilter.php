@@ -4,6 +4,13 @@ namespace App\Http\Filters\V1;
 
 class TicketFilter extends QueryFilter
 {
+
+    protected $sortable = [
+        'title', 
+        'status', 
+        'createdAt' => 'created_at'
+    ];
+
     public function status($value)
     {
         return $this->builder->whereIn('status', explode(",", $value));
