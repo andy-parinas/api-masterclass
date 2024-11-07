@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 
+Route::middleware('auth:sanctum')->group(function(){
 
-Route::middleware('auth:sanctum')->apiResource('tickets', TicketController::class);
-Route::middleware('auth:sanctum')->apiResource('users', UserController::class);
-Route::middleware('auth:sanctum')->apiResource('users.tickets', AuthorTicketsController::class);
+    Route::apiResource('tickets', TicketController::class)->except(['update']);
+    Route::put('tickets/{ticket}', [TicketController::class, 'replace']);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('users.tickets', AuthorTicketsController::class);  
+      
+});
+
