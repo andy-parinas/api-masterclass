@@ -8,9 +8,11 @@ use App\Http\Requests\Api\V1\StoreTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class AuthorTicketsController extends Controller
+class AuthorTicketsController extends ApiController
 {
     public function index($user_id, TicketFilter $filters)
     {
@@ -31,5 +33,26 @@ class AuthorTicketsController extends Controller
         ];
 
         return new TicketResource(Ticket::create($model));
+    }
+
+
+    public function destroy($user_id, $ticket_id)
+    {
+        try {
+            
+            $user = User::findOrFail($user_id);
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            if($ticket->user_id === $user->id){
+
+                $ticket->delete();
+                return $this->ok('Ticket Successfully Deleted');
+            }
+
+            return $this->error("The Ticket Does not exists", Response::HTTP_NOT_FOUND);
+
+        }catch(ModelNotFoundException $exception){
+            return $this->error("The Ticket Does not exists", Response::HTTP_NOT_FOUND);
+        }
     }
 }
