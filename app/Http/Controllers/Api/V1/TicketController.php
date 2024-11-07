@@ -10,13 +10,20 @@ use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Policies\V1\TicketPolicy;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class TicketController extends ApiController
 {
+
+
+    protected $policyClass = TicketPolicy::class;
+
     /**
      * Display a listing of the resource.
      * 
@@ -67,14 +74,25 @@ class TicketController extends ApiController
     public function update(UpdateTicketRequest $request, $ticket_id)
     {
 
-        $ticket = Ticket::find($ticket_id);
-        if(!$ticket){
+        try {
+
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            $this->isAble('update', $ticket);
+            
+
+            $ticket->update($request->mappedAttributes());
+
+            return new TicketResource($ticket);
+
+        } catch (ModelNotFoundException $exception) {
+            
             return $this->error("Ticket provided does not exists", Response::HTTP_NOT_FOUND);
-        }
 
-        $ticket->update($request->mappedAttributes());
+        }catch(AuthorizationException $exception){
 
-        return new TicketResource($ticket);
+            return $this->error("You are not allowed to updated the ticket", Response::HTTP_FORBIDDEN);
+        }    
 
     }
 
