@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Rules\UserMustExist;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReplaceTicketRequest extends FormRequest
+class ReplaceTicketRequest extends BaseTicketRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,17 +26,12 @@ class ReplaceTicketRequest extends FormRequest
             'data.attributes.title' => 'required|string',
             'data.attributes.description' => 'required|string',
             'data.attributes.status' => 'required|string|in:A,C,H,X',
-            'data.relationships.user.data.id' => 'required|integer'
+            // 'data.relationships.user.data.id' => 'required|integer'
+            'data.relationships.user.data.id' => ['sometimes','integer', new UserMustExist]
         ];
 
 
         return $rules;
     }
 
-    public function messages(): array
-    {
-        return [
-            'data.attributes.status' => 'The status value is invalid. Please use: A, C, H, or X'
-        ];
-    }
 }

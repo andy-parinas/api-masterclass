@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Rules\UserMustExist;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class StoreTicketRequest extends BaseTicketRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,17 +31,11 @@ class StoreTicketRequest extends FormRequest
         ];
 
         if($this->routeIs('api.v1.tickets.store')){
-            $rules['data.relationships.user.data.id'] ='required|integer';
+            // $rules['data.relationships.user.data.id'] ='required|integer';
+            $rules['data.relationships.user.data.id'] = ['required','integer', new UserMustExist];
         }
 
 
         return $rules;
-    }
-
-    public function messages(): array
-    {
-        return [
-            'data.attributes.status' => 'The status value is invalid. Please use: A, C, H, or X'
-        ];
     }
 }

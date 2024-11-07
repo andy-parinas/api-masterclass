@@ -26,20 +26,6 @@ class TicketController extends ApiController
     {
         return TicketResource::collection(Ticket::filter($filters)->paginate());
 
-        // if($this->include('author')){
-        //     return TicketResource::collection(Ticket::with('user')->paginate());
-        // }
-
-
-        // return TicketResource::collection(Ticket::paginate());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -47,25 +33,8 @@ class TicketController extends ApiController
      */
     public function store(StoreTicketRequest $request)
     {
-        try {
-            
-            $user = User::findOrFail($request->input('data.relationships.user.data.id'));
 
-        } catch (ModelNotFoundException $exception) {
-           
-            return $this->error("User provided does not exists", Response::HTTP_BAD_REQUEST);
-        
-        }
-        
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationships.user.data.id'),
-        ];
-
-        return new TicketResource(Ticket::create($model));
-
+        return new TicketResource(Ticket::create($request->mappedAttributes()));
         
     }
 
@@ -95,9 +64,18 @@ class TicketController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, $ticket_id)
     {
-        //PATCH
+
+        $ticket = Ticket::find($ticket_id);
+        if(!$ticket){
+            return $this->error("Ticket provided does not exists", Response::HTTP_NOT_FOUND);
+        }
+
+        $ticket->update($request->mappedAttributes());
+
+        return new TicketResource($ticket);
+
     }
 
     public function replace(ReplaceTicketRequest $request, $ticket_id)
@@ -108,20 +86,7 @@ class TicketController extends ApiController
             return $this->error("Ticket provided does not exists", Response::HTTP_NOT_FOUND);
         }
 
-        $user = User::find($request->input('data.relationships.user.data.id'));
-        if(!$user){
-            return $this->error("User Id provided does not exists", Response::HTTP_NOT_FOUND);
-        }
-            
-             
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationships.user.data.id'),
-        ];
-
-        $ticket->update($model);
+        $ticket->update($request->mappedAttributes());
 
         return new TicketResource($ticket);
 
