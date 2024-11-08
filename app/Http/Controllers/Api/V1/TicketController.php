@@ -43,14 +43,13 @@ class TicketController extends ApiController
     {
 
         try {
-
-            $this->isAble(Abilities::CreateTicket, null);
+            $this->isAble('store', Ticket::class);
 
             return new TicketResource(Ticket::create($request->mappedAttributes()));
 
         } catch (AuthorizationException $exception) {
 
-            return $this->error("You are not allowed to updated the ticket", Response::HTTP_FORBIDDEN);
+            return $this->error("You are not allowed to create a ticket", Response::HTTP_FORBIDDEN);
         }
 
     }
