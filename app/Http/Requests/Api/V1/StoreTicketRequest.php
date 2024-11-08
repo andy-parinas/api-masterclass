@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1;
 use App\Permissions\V1\Abilities;
 use App\Rules\UserMustExist;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreTicketRequest extends BaseTicketRequest
 {
@@ -32,7 +33,7 @@ class StoreTicketRequest extends BaseTicketRequest
 
         ];
 
-        $user = $this->user();
+        $user = Auth::user();
 
         if($this->routeIs('api.v1.tickets.store')){
             if($user->tokenCan(Abilities::CreateOwnTicket)){
