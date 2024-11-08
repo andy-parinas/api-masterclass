@@ -14,6 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::factory()->create([
+            'email' => 'manager@manager.com',
+            'name' => 'App Manager',
+            'is_manager' => true
+        ]);
+
         $users = User::factory(10)->create();
 
         Ticket::factory(100)

@@ -10,6 +10,7 @@ use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Permissions\V1\Abilities;
 use App\Policies\V1\TicketPolicy;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -41,8 +42,17 @@ class TicketController extends ApiController
     public function store(StoreTicketRequest $request)
     {
 
-        return new TicketResource(Ticket::create($request->mappedAttributes()));
-        
+        try {
+
+            $this->isAble(Abilities::CreateTicket, null);
+
+            return new TicketResource(Ticket::create($request->mappedAttributes()));
+
+        } catch (AuthorizationException $exception) {
+
+            return $this->error("You are not allowed to updated the ticket", Response::HTTP_FORBIDDEN);
+        }
+
     }
 
     /**
