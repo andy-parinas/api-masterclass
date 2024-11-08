@@ -25,9 +25,14 @@ class StoreTicketRequest extends BaseTicketRequest
     public function rules(): array
     {
         $rules = [
+            'data' => 'required|array',
+            'data.attributes' => 'required|array',
             'data.attributes.title' => 'required|string',
             'data.attributes.description' => 'required|string',
             'data.attributes.status' => 'required|string|in:A,C,H,X',
+            'data.realtionships' => 'required|array',
+            'data.relationships.user' => 'required|array',
+            'data.relationships.user.data' => 'required|array',
             'data.relationships.user.data.id' => 'required|integer|exists:users,id', // This is the same as the  UserMustExist custom Rules that was created.
 
 

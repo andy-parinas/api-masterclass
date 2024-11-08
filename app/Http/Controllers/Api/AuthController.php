@@ -16,6 +16,22 @@ class AuthController extends Controller
 
     use ApiResponses;
 
+    /**
+     * Login
+     * 
+     * Authenticates the user and returns the user's API Token
+     * 
+     * @unauthenticated
+     * @group Authentication
+     * @response 200 {
+     *  "data": {
+     *      "token": "{YOUR_AUTH_TOKEN}"
+     *  },
+     *  "message": "Authenticated",
+     *  "statusCode": 200
+     * }
+     * 
+     */
     public function login(LoginUserRequest $request)
     {
         $request->validated($request->all());
@@ -38,7 +54,15 @@ class AuthController extends Controller
         );
     }
 
-
+    /**
+     * Logout
+     * 
+     * Logout the authenticated user
+     * 
+     * @group Authentication
+     * @response 200 {}
+     * 
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

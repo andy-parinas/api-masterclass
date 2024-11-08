@@ -26,9 +26,15 @@ class TicketController extends ApiController
     protected $policyClass = TicketPolicy::class;
 
     /**
-     * Display a listing of the resource.
+     * Get All Tickets
      * 
-     * Notes: The TicketFilter here is instantiated via Dependency Injections
+     * Get all the tickets with pagination, optional sorting and filtering
+     * 
+     * @group Managing Tickets
+     * @queryParam sort string Data field(s) to sort by. Separate multiple fields with commas. Denotes descending sort with a minues sign. Example: sort=title,-createdAt
+     * @queryParam filter[status] Filter by status code: A,C,X,H. No-example
+     * @queryParam filter[title] Filter by title. Wildcards are supported. Example: *fix*
+     * 
      */
     public function index(Request $request, TicketFilter $filters)
     {
@@ -37,7 +43,12 @@ class TicketController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a Ticket
+     * 
+     * Creates a new Ticket. Users can only create a ticket for themselves. Managers can create ticket for any users.
+     * 
+     * @group Managing Tickets
+     * 
      */
     public function store(StoreTicketRequest $request)
     {
